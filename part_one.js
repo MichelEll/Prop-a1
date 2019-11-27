@@ -18,4 +18,4 @@ var myObject = {
     }
 }
 
-myObject.create()
+
