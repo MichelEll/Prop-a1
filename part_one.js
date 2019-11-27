@@ -3,19 +3,23 @@
  Fabian Johansson,
  */
 var myObject = {
-
     prototypeList: [],
 
-    call: function (funkName, parameters) {
+    call: function(funkName,parameters) {
     },
 
-    create: function (listOfParents) {
-        //skapa ny funktion för
-        return {
-            prototypeList: [listOfParents],
-            //prototypeList.push(newObject);
-            __proto__: this,
-        }
+    create: function(listOfParents) {
+    //Return new object
+       return {
+            prototypeList : [listOfParents],
+           __proto__:this,
+
+
+
+
+    }
+
+
     }
 }
 
