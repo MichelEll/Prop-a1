@@ -5,14 +5,15 @@
 var myObject = {
     prototypeList: [],
 
+    call: function(funkName,parameters) {
+    },
+
     create: function(listOfParents) {
-    //skapa ny funktion för
+    //Return new object
        return {
             prototypeList : [listOfParents],
-                //prototypeList.push(newObject);
            __proto__:this,
-             call: function(funkName,parameters) {
-        }
+
 
 
 
