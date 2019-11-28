@@ -1,6 +1,6 @@
 /**
  Michel Mottet Ellnefjärd, 8512270052, miel9299
- Fabian Johansson,
+ Fabian Johansson, fajo6716
  */
 var myObject = {
     prototypeList: [],
