@@ -1,49 +1,86 @@
 /**
- Michel Mottet Ellnefjärd, 8512270052, miel9299
+ Michel Mottet Ellnefjärd, miel9299
  Fabian Johansson,
  */
-var myObject = {
+let myObject = {
     prototypeList: [],
 
+
     create: function (listOfParents) {
-        //Return new object  //ta bort när klart
         return {
-            prototypeList: [listOfParents],
+            prototypeList: listOfParents,
             __proto__: this,
         }
     },
     call: function (funkName, parameters) {
-        //var results = null;
-        console.log("test");  //ta bort när klart
-        console.log (typeof this[funkName]);   //ta bort när klart
         if (typeof this[funkName] === "function") {
-            console.log("test inside ttype off");  // ta bort när klart
-
             return this[funkName](parameters);
         }
-    }
-
-    /*
-    if (this.hasOwnProperty(funkName)) {
-        results = this.funkName();
-    } else {
-        while (results == null) {
-            //results = prototypeList.forEach(call(funkName,parameters));
+        if (this.prototypeList.length != null) {
+            for (let i = 0; i < this.prototypeList.length; i++) {
+                let result = this.prototypeList[i].call(funkName, parameters);
+                if (result != null) {
+                    return result;
+                }
+            }
         }
-        return results;
+        return null;
+    },
+    addPrototype: function (obj) {
+        if(!obj.check(this)){
+            this.prototypeList.push(obj);
+        }else{
+            console.log("error! finns redan!");
+        }
+    },
+    check: function (obj) {
+        let bool = false;
+        if (this.prototypeList.includes(obj)) {
+            return true;
+        }
+        if (this.prototypeList != null) {
+            for (let i = 0; i < this.prototypeList.length; i++) {
+                bool = this.prototypeList[i].check(obj);
+            }
+        }
+        return bool;
+
     }
 }
 
-     */
-}
 
-// detta är test koden som vi ska köra
+// detta är test koden för att kontrollera programmet.
 var obj0 = myObject.create(null);
-obj0.func = function(arg) { return "func0: " + arg; };
+obj0.func = function (arg) {
+    return "func0: " + arg;
+};
 var obj1 = myObject.create([obj0]);
 var obj2 = myObject.create([]);
-obj2.func = function(arg) { return "func2: " + arg; };
+obj2.func = function (arg) {
+    return "func2: " + arg;
+};
 var obj3 = myObject.create([obj1, obj2]);
-obj3.func = function(arg) { return "func3: " + arg; };
-var result = obj3.call("func", ["hello"]) ;
+var result = obj3.call("func", ["hello"]);
 console.log("should print ’func0: hello’ ->", result);
+
+obj0 = myObject.create(null);
+obj0.func = function (arg) {
+    return "func0: " + arg;
+};
+obj1 = myObject.create([obj0]);
+obj2 = myObject.create([]);
+obj3 = myObject.create([obj2, obj1]);
+result = obj3.call("func", ["hello"]);
+console.log("should print ’func0: hello’ ->", result);
+
+obj0 = myObject.create(null);
+obj0.func = function (arg) {
+    return "func0: " + arg;
+};
+result = obj0.call("func", ["hello"]);
+console.log("should print ’func0: hello’ ->", result);
+
+//circular testing
+var obj0 = myObject.create(null);
+var obj1 = myObject.create([obj0]);
+obj0.addPrototype(obj1);
