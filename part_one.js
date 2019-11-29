@@ -6,35 +6,25 @@ var myObject = {
     prototypeList: [],
 
     create: function (listOfParents) {
-        //Return new object  //ta bort när klart
         return {
-            prototypeList: [listOfParents],
+            prototypeList: listOfParents,
             __proto__: this,
         }
     },
     call: function (funkName, parameters) {
-        //var results = null;
-        console.log("test");  //ta bort när klart
-        console.log (typeof this[funkName]);   //ta bort när klart
         if (typeof this[funkName] === "function") {
-            console.log("test inside ttype off");  // ta bort när klart
-
             return this[funkName](parameters);
+        }else if(this.prototypeList !== null){
+            for(var i = 0; i < this.prototypeList.length; i++) {
+                if(this.prototypeList[i].call(funkName,parameters) !== undefined){
+                    return this.prototypeList[i].call(funkName,parameters);
+                }
+            }
+
+        }else{
+            return "Sorry no such function available";
         }
     }
-
-    /*
-    if (this.hasOwnProperty(funkName)) {
-        results = this.funkName();
-    } else {
-        while (results == null) {
-            //results = prototypeList.forEach(call(funkName,parameters));
-        }
-        return results;
-    }
-}
-
-     */
 }
 
 // detta är test koden som vi ska köra
@@ -47,3 +37,5 @@ var obj3 = myObject.create([obj1, obj2]);
 obj3.func = function(arg) { return "func3: " + arg; };
 var result = obj3.call("func", ["hello"]) ;
 console.log("should print ’func0: hello’ ->", result);
+
+
