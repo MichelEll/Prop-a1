@@ -29,16 +29,17 @@ let myObject = {
     addPrototype: function (obj) {
         if(!obj.check(this)){
             this.prototypeList.push(obj);
+            console.log ("added!");
         }else{
-            console.log("error! finns redan!");
+            throw "error, would cause circular inheritence"
         }
     },
     check: function (obj) {
         let bool = false;
-        if (this.prototypeList.includes(obj)) {
-            return true;
-        }
         if (this.prototypeList != null) {
+            if (this.prototypeList.includes(obj)) {
+                return true;
+            }
             for (let i = 0; i < this.prototypeList.length; i++) {
                 bool = this.prototypeList[i].check(obj);
             }
@@ -83,4 +84,7 @@ console.log("should print ’func0: hello’ ->", result);
 //circular testing
 var obj0 = myObject.create(null);
 var obj1 = myObject.create([obj0]);
+var obj2 = myObject.create([obj0]);
+var obj3 = myObject.create([obj2]);
+obj1.addPrototype(obj2);
 obj0.addPrototype(obj1);
