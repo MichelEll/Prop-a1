@@ -1,6 +1,6 @@
 /**
  Michel Mottet Ellnefjärd, miel9299
- Fabian Johansson,
+ Fabian Johansson,fajo6716
  */
 function createClass(name, superClassList) {
 
