@@ -1,68 +1,112 @@
 /**
- Michel Mottet Ellnefjärd, 8512270052, miel9299
- Fabian Johansson, fajo6716
+ Michel Mottet Ellnefjärd, miel9299
+ Fabian Johansson,
  */
+function createClass(name, superClassList) {
 
-function createClass(className, superClassList){
-    /*var superClasses = []
-    this.name = className;
-    if(superClassList !== null){
-        for(var i = 0; i < superClassList.length; i++) {
-            var parent = superClassList[i];
-            superClasses.push(parent);
-        }
-    }else {
-        superClasses = null;
-    }*/
+    let myClass = {
+        className: name,
+        inheritanceList: superClassList,
 
-    var newClass =  {
-        name: className,
-        superClasses: superClassList,
+
+        addSuperClass: function (obj) {
+            if (!obj.__check(this)) {
+                this.inheritanceList.push(obj);
+                console.log("added!");
+            } else {
+                throw "error, would cause circular inheritence"
+            }
+        },
+        __check: function (obj) {
+            let bool = false;
+            if (this.inheritanceList != null) {
+                if (this.inheritanceList.includes(obj)) {
+                    return true;
+                }
+                for (let i = 0; i < this.inheritanceList.length; i++) {
+                    bool = this.inheritanceList[i].__check(obj);
+                }
+            }
+            return bool;
+        },
+        __find: function (funcName) {
+            if (typeof this[funcName] === "function") {
+                return this;
+            }
+            if (this.inheritanceList != null) {
+                for (let i = 0; i < this.inheritanceList.length; i++) {
+                    let obj = this.inheritanceList[i].__find(funcName);
+                    if (obj != null) {
+                        return obj;
+                    }
+                }
+                return null;
+            }
+        },
         new: function () {
-            //return this;
-            var newObj = this;
-            newObj.call = function(funcName, parameters) {
-                if(this.hasOwnProperty(funcName)) {
+            var obj = Object.create(this);
+
+            obj.call = function (funcName, parameters) {
+                if (typeof this[funcName] === "function") {
                     return this[funcName](parameters);
-                }else {
-                    if(this.superClasses.length !== undefined){
-                        for(var i = 0; i < this.superClasses.length; i++){
-                            if(superClasses[i].hasOwnProperty(funcName) === 'function'){
-                                var temp = superClasses[i];
-                                return temp[funcName](parameters);
-                            }
-                            if(superClasses[i].new().call(funcName,parameters) !== undefined) {
-                                return this.superClasses[i].this.call(funcName,parameters) ;
-                            }
+                }
+                if (this.inheritanceList != null) {
+                    for (let i = 0; i < this.inheritanceList.length; i++) {
+                        let obj = this.inheritanceList[i].__find(funcName);
+                        if (obj != null) {
+                            return obj[funcName](parameters);
                         }
                     }
                 }
+                return null;
             }
-            return newObj;
-        }
-
-    }
-    return newClass;
+            return obj;
+        },
+    };
+    return myClass;
 }
-/* Test code 1 */
+
+
+// testing code used to test
+
 var class0 = createClass("Class0", null);
-class0.func = function(arg) { return "func0: " + arg; };
+
+class0.func = function (arg) {
+    return "func0: " + arg;
+};
 var class1 = createClass("Class1", [class0]);
 var class2 = createClass("Class2", []);
-class2.func = function(arg) { return "func2: " + arg; };
+class2.func = function (arg) {
+    return "func2: " + arg;
+};
 var class3 = createClass("Class3", [class1, class2]);
 var obj3 = class3.new();
+console.log(obj3);
 var result = obj3.call("func", ["hello"]);
-/*Test code 2*/
+
 class0 = createClass("Class0", null);
-class0.func = function(arg) { return "func0: " + arg; };
+class0.func = function (arg) {
+    return "func0: " + arg;
+};
 class1 = createClass("Class1", [class0]);
 class2 = createClass("Class2", []);
 class3 = createClass("Class3", [class2, class1]);
 obj3 = class3.new();
 result = obj3.call("func", ["hello"]);
-/*Test code 3*/
+
 class0 = createClass("Class0", null);
-class0.func = function(arg) { return "func0: " + arg; };
+class0.func = function (arg) {
+    return "func0: " + arg;
+};
 var obj0 = class0.new();
 result = obj0.call("func", ["hello"]);
+console.log("should print ’func0: hello’ ->", result);
+
+
+
+var class0 = createClass("Class 0", null);
+var class1 = createClass("Class 1", [class0]);
+class0.addSuperClass(class1);
+
+
+
